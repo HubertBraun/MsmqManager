@@ -36,6 +36,43 @@ namespace MsmqManager
             _queues.Add(queue);
         }
 
+        public void CopyMessages(int from, int to)
+        {
+            var msgs = _queues[from].GetAllMessages();
+            foreach (var m in msgs)
+            {
+                object body = null;
+                try
+                {
+                    body = m.Body;
+                }
+                catch
+                {
+                    body = new object(); // when body is null or corrupted
+                }
+                _queues[to].Send(body, MessageQueueTransactionType.None);
+            }
+        }
+
+        public void MoveMessages(int from, int to)
+        {
+            var msgs = _queues[from].GetAllMessages();
+            foreach (var m in msgs)
+            {
+                object body = null;
+                try
+                {
+                    body = m.Body;
+                }
+                catch
+                {
+                    body = new object(); // when body is null or corrupted
+                }
+                _queues[to].Send(body, MessageQueueTransactionType.None);
+            }
+            _queues[from].Purge();
+        }
+
         public void ReadTopMessage(int qNumber)
         {
             if(!_queues[qNumber].CanRead)

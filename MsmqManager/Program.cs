@@ -15,10 +15,14 @@ namespace MsmqManager
             Console.CursorVisible = false;
             var mng = new QueueManager();
             var layout = new Layout("QUEUE MANAGER", new Menu(mng.GetQueueNamesWithCount(), new List<string> { "Add Queue" }),
-                new Help(), 28);
+                new Help(28));
 
             var key = ConsoleKey.Enter;
-            while (key != ConsoleKey.Q)
+            bool waitForChooseSecondQueue = false;
+            bool isCopy = false;
+            var from = 0;
+            bool run = true;
+            while (run)
             {
                 try
                 {
@@ -30,6 +34,15 @@ namespace MsmqManager
                     layout.CleanException();
                     switch (key)
                     {
+                        case ConsoleKey.Q:
+                            if (waitForChooseSecondQueue)
+                            {
+                                waitForChooseSecondQueue = false;
+                                layout.Help.SetStandardPairs();
+                            }
+                            else
+                                run = false;
+                            break;
                         case ConsoleKey.Enter:
                             if (layout.Menu.ActionCount - 1 == layout.Menu.CurrentAction)
                             {
@@ -62,6 +75,45 @@ namespace MsmqManager
                             if (layout.Menu.CurrentAction < layout.Menu.ActionCount - 1)
                             {
                                 mng.DeleteMessages(layout.Menu.CurrentAction);
+                            }
+                            break;
+                        case ConsoleKey.C:
+                            if (layout.Menu.CurrentAction < layout.Menu.ActionCount - 1)
+                            {
+                                if (!waitForChooseSecondQueue)
+                                {
+                                    from = layout.Menu.CurrentAction;
+                                    isCopy = true;
+                                    waitForChooseSecondQueue = !waitForChooseSecondQueue;
+                                    layout.Help.SetCopyPairs();
+                                }
+                                else if (isCopy)
+                                {
+                                    var to = layout.Menu.CurrentAction;
+                                    mng.CopyMessages(from, to);
+                                    waitForChooseSecondQueue = !waitForChooseSecondQueue;
+                                    layout.Help.SetStandardPairs();
+                                }
+
+                            }
+                            break;
+                        case ConsoleKey.M:
+                            if (layout.Menu.CurrentAction < layout.Menu.ActionCount - 1)
+                            {
+                                if (!waitForChooseSecondQueue)
+                                {
+                                    from = layout.Menu.CurrentAction;
+                                    isCopy = false;
+                                    waitForChooseSecondQueue = !waitForChooseSecondQueue;
+                                    layout.Help.SetMovePairs();
+                                }
+                                else if(!isCopy)
+                                {
+                                    var to = layout.Menu.CurrentAction;
+                                    mng.MoveMessages(from, to);
+                                    waitForChooseSecondQueue = !waitForChooseSecondQueue;
+                                    layout.Help.SetStandardPairs();
+                                }
                             }
                             break;
                         case ConsoleKey.DownArrow:

@@ -10,19 +10,17 @@ namespace MsmqManager
     {
         private string _title;
         public Menu Menu { get; private set; }
-        private Help _help;
-        private int _height;
+        public Help Help { get; private set; }
         private string _exception = "";
-        public Layout(string title, Menu menu, Help help, int height)
+        public Layout(string title, Menu menu, Help help)
         {
             Menu = menu;
             _title = title;
-            _help = help;
-            _height = height;
+            Help = help;
             Console.SetCursorPosition(0, 0);
             Console.WriteLine(_title);
             Menu.DisplayMenu(0, 1);
-            _help.DisplayHelp(_height);
+            Help.DisplayHelp();
         }
         public void Refersh()
         {
@@ -35,6 +33,7 @@ namespace MsmqManager
             Console.WriteLine(_exception);
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Black;
+            Help.DisplayHelp();
         }
         public void CleanException()
         {
