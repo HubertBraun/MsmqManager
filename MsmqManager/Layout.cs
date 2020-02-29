@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using static MsmqManager.ConsoleHelper;
 namespace MsmqManager
 {
     public class Layout
@@ -26,23 +26,30 @@ namespace MsmqManager
         {
             Console.ResetColor();
             Console.SetCursorPosition(0, 0);
-            Console.WriteLine(_title);
+            Console.BackgroundColor = ConsoleColor.DarkCyan;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(_title.PadRight(WindowWidth, ' '));
+            Console.ResetColor();
             Menu.DisplayMenu(0, 1);
-            Console.SetCursorPosition(0, Menu.ActionCount + 2);
+            Console.SetCursorPosition(0, Menu.ActionCount - Menu.CurrentY - 2);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(_exception);
+            if (_exception.Any(x => x != ' '))
+            {
+                Console.SetCursorPosition(0, Menu.CurrentAction - Menu.CurrentY + 1);
+                Console.WriteLine(_exception);
+            }
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Black;
             Help.DisplayHelp();
         }
         public void CleanException()
         {
-            _exception = "".PadLeft(100, ' ');
+            _exception = "".PadLeft(WindowWidth, ' ');
         }
         public void SetException(string msg)
         {
-            _exception = msg;
-            Console.SetCursorPosition(0, Menu.ActionCount + 2);
+            _exception = msg.PadRight(WindowWidth, ' ');
+            Console.SetCursorPosition(0, Menu.CurrentAction - Menu.CurrentY + 1);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(msg);
             Console.ResetColor();

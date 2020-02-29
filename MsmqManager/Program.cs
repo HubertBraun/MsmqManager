@@ -14,10 +14,8 @@ namespace MsmqManager
         {
             Console.CursorVisible = false;
             var mng = new QueueManager();
-            var layout = new Layout("QUEUE MANAGER", new Menu(mng.GetQueueNamesWithCount(), new List<string> { "Add Queue" }),
+            var layout = new Layout("QUEUE MANAGER v1.0.0.0", new Menu(mng.GetQueueNamesWithCount(), new List<string> { "Add Queue" },26),
                 new Help(28));
-
-            var key = ConsoleKey.Enter;
             bool waitForChooseSecondQueue = false;
             bool isCopy = false;
             var from = 0;
@@ -30,7 +28,7 @@ namespace MsmqManager
                     Console.WriteLine("QUEUE MANAGER");
                     layout.Menu.UpdateMenu(mng.GetQueueNamesWithCount(), layout.Menu.CurrentAction);
                     layout.Refersh();
-                    key = Console.ReadKey().Key;
+                    ConsoleKey key = Console.ReadKey().Key;
                     layout.CleanException();
                     switch (key)
                     {
@@ -46,7 +44,7 @@ namespace MsmqManager
                         case ConsoleKey.Enter:
                             if (layout.Menu.ActionCount - 1 == layout.Menu.CurrentAction)
                             {
-                                var name = ConsoleHelper.ReadStringFromUser(0, layout.Menu.CurrentAction + 1);
+                                var name = layout.Menu.ReadStringFromUser();//ConsoleHelper.ReadStringFromUser(0, layout.Menu.CurrentAction + 1);
                                 mng.AddQueue(name);
                             }
                             break;
@@ -59,14 +57,14 @@ namespace MsmqManager
                         case ConsoleKey.A:
                             if (layout.Menu.CurrentAction < layout.Menu.ActionCount - 1)
                             {
-                                var msg = ConsoleHelper.ReadStringFromUser(0, layout.Menu.CurrentAction + 1);
+                                var msg = layout.Menu.ReadStringFromUser();
                                 mng.AddMessage(layout.Menu.CurrentAction, msg);
                             }
                             break;
                         case ConsoleKey.N:
                             if (layout.Menu.CurrentAction < layout.Menu.ActionCount - 1)
                             {
-                                var count = int.Parse(ConsoleHelper.ReadStringFromUser(0, layout.Menu.CurrentAction + 1));
+                                var count = int.Parse(layout.Menu.ReadStringFromUser());
                                 for (int i = 0; i < count; i++)
                                     mng.AddMessage(layout.Menu.CurrentAction, " ");
                             }
