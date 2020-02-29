@@ -73,14 +73,19 @@ namespace MsmqManager
             _queues[from].Purge();
         }
 
-        public void ReadTopMessage(int qNumber)
+        public string ReadTopMessage(int qNumber)
         {
             if(!_queues[qNumber].CanRead)
             {
                 throw new Exception("Can't read from queue");
             }
-            var msg = _queues[qNumber].Peek().Body;
-            Console.WriteLine(msg);
+            if(!_queues[qNumber].GetMessageEnumerator2().MoveNext())
+            {
+                throw new Exception("Queue is empty");
+            }
+            var msg = _queues[qNumber].Peek();
+            msg.Formatter = new XmlMessageFormatter(new string[] { "System.String,mscorlib" });
+            return msg.Body.ToString();
         }
 
         public List<string> GetQueueNamesWithCount()
