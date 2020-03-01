@@ -28,11 +28,13 @@ namespace MsmqManager.TUI
             _pairs.Add(new Tuple<string, string>("R", "Refresh"));
             _pairs.Add(new Tuple<string, string>("N", "Add N empty messages"));
             _pairs.Add(new Tuple<string, string>("T", "Read top message"));
+            _pairs.Add(new Tuple<string, string>("H", "Delete top message"));
             _pairs.Add(new Tuple<string, string>("D", "Delete queue"));
             _pairs.Add(new Tuple<string, string>("P", "Delete messages"));
             _pairs.Add(new Tuple<string, string>("C", "Copy messages"));
             _pairs.Add(new Tuple<string, string>("M", "Move messages"));
             _pairs.Add(new Tuple<string, string>("Q", "Exit"));
+            UpdatePairsOnScreen();
         }
         private void UpdatePairsOnScreen()
         {
@@ -74,8 +76,8 @@ namespace MsmqManager.TUI
         {
             for (int i = 0; i < Coords.Size.Y; i++)
             {
-                Console.SetCursorPosition(Coords.Position.X, Coords.Position.Y);
-                Console.WriteLine("".PadLeft(Coords.Size.X, ' '));
+                Console.SetCursorPosition(Coords.Position.X, Coords.Position.Y + i);
+                Console.Write("".PadLeft(Coords.Size.X - 1, ' '));
             }
         }
     }

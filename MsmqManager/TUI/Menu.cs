@@ -20,7 +20,11 @@ namespace MsmqManager.TUI
 
         public Menu(Coords coords, List<string> actions, List<string> extraActions)
         {
-            _actions = actions;
+            _actions = new List<string>();
+            foreach (var a in actions)
+            {
+                _actions.Add(a.PadRight(coords.Size.X));
+            }
             _extraActions = extraActions;
             CurrentAction = 0;
             CurrentY = 0;
@@ -130,7 +134,11 @@ namespace MsmqManager.TUI
                     Console.SetCursorPosition(0, actions.Count + 2);
                 Console.WriteLine("".PadLeft(Coords.Size.X));
             }
-            _actions = actions;
+            _actions = new List<string>();
+            foreach (var a in actions)
+            {
+                _actions.Add(a.PadRight(Coords.Size.X));
+            }
             CurrentAction = it;
         }
         public void AddAction(string str)

@@ -14,7 +14,7 @@ namespace MsmqManager
 
         static void Main(string[] args)
         {
-            Console.CursorVisible = false;
+            Console.CursorVisible = true;
             var mng = new QueueManager();
             var help = new Help(new Coords(WindowWidth, 2, 0, WindowHeight - 2));
             var menu = new Menu(new Coords(MaxQueueName + 8, WindowHeight - 3, 0, 1), mng.GetQueueNamesWithCount(), new List<string> { "Add Queue" });
@@ -31,7 +31,6 @@ namespace MsmqManager
             {
                 try
                 {
-                    //menu.UpdateMenu(mng.GetQueueNamesWithCount(), menu.CurrentAction);
                     layout.Display();
                     ConsoleKey key = Console.ReadKey().Key;
                     layout.CleanException();
@@ -72,6 +71,7 @@ namespace MsmqManager
                                 var msg = menu.ReadStringFromUser();
                                 mng.AddMessage(menu.CurrentAction, msg);
                             }
+                            menu.UpdateMenu(mng.GetQueueNamesWithCount(), menu.CurrentAction);
                             break;
                         case ConsoleKey.N:
                             if (menu.CurrentAction < menu.ActionCount - 1)
@@ -80,12 +80,14 @@ namespace MsmqManager
                                 for (int i = 0; i < count; i++)
                                     mng.AddMessage(menu.CurrentAction, " ");
                             }
+                            menu.UpdateMenu(mng.GetQueueNamesWithCount(), menu.CurrentAction);
                             break;
                         case ConsoleKey.P:
                             if (menu.CurrentAction < menu.ActionCount - 1)
                             {
                                 mng.DeleteMessages(menu.CurrentAction);
                             }
+                            menu.UpdateMenu(mng.GetQueueNamesWithCount(), menu.CurrentAction);
                             break;
                         case ConsoleKey.C:
                             if (menu.CurrentAction < menu.ActionCount - 1)
@@ -103,8 +105,8 @@ namespace MsmqManager
                                     mng.CopyMessages(from, to);
                                     waitForChooseSecondQueue = !waitForChooseSecondQueue;
                                     help.SetStandardPairs();
+                                    menu.UpdateMenu(mng.GetQueueNamesWithCount(), menu.CurrentAction);
                                 }
-
                             }
                             break;
                         case ConsoleKey.M:
@@ -123,6 +125,7 @@ namespace MsmqManager
                                     mng.MoveMessages(from, to);
                                     waitForChooseSecondQueue = !waitForChooseSecondQueue;
                                     help.SetStandardPairs();
+                                    menu.UpdateMenu(mng.GetQueueNamesWithCount(), menu.CurrentAction);
                                 }
                             }
                             break;
@@ -131,6 +134,13 @@ namespace MsmqManager
                             {
                                 var msg = mng.ReadTopMessage(menu.CurrentAction);
                                 msgBox.SetText(msg);
+                            }
+                            break;
+                        case ConsoleKey.H:
+                            if (menu.CurrentAction < menu.ActionCount - 1)
+                            {
+                                mng.DeleteTopMessage(menu.CurrentAction);
+                                menu.UpdateMenu(mng.GetQueueNamesWithCount(), menu.CurrentAction);
                             }
                             break;
                         case ConsoleKey.R:

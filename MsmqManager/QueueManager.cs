@@ -124,6 +124,16 @@ namespace MsmqManager
             MessageQueue.Delete(@".\" + _queues[qNumber].QueueName);
             _queues = MessageQueue.GetPrivateQueuesByMachine(Environment.MachineName).ToList();
         }
+
+        public void DeleteTopMessage(int qNumber)
+        {
+            if (!_queues[qNumber].GetMessageEnumerator2().MoveNext())
+            {
+                throw new Exception("Queue is empty");
+            }
+            _queues[qNumber].Receive();
+        }
+
         public void DeleteMessages(int qNumber)
         {
             _queues[qNumber].Purge();
